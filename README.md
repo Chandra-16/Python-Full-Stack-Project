@@ -21,7 +21,7 @@ With EnergyFlo, you can find out which of your devices use the most power and wa
 - **🔒 Secure & Scalable Database**: Your data is safely stored in a flexible and powerful Supabase database.
 
 ## Project Structure
-
+```
 EnergyFlo/                                        # Main project directory
 ├── .env                                          # 🔐 Environment variables for sensitive data (e.g., Supabase keys)
 ├── README.md                                     # 📝 Project overview, features, and setup instructions
@@ -37,8 +37,7 @@ EnergyFlo/                                        # Main project directory
     ├── __init__.py                               # 📜 Makes 'src' a Python package
     ├── db.py                                     # 💾 Module for all Supabase database interactions
     └── logic.py                                  # 🧠 Module for business logic and data processing
-
-
+```
 ## 🚀 Getting Started
 
 # Prerequisites
@@ -53,7 +52,6 @@ EnergyFlo/                                        # Main project directory
 
 ### 2. Set up your environment:
 
-- Create a virtual environment (recommended)
     python -m venv venv
     source venv/bin/activate
 
