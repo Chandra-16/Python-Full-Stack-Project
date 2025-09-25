@@ -65,3 +65,32 @@ def get_energy_readings(appliance_id: str, start_date: str = None, end_date: str
         
     response = query.order('timestamp', desc=True).execute()
     return response.data
+
+# --- UPDATE Functions ---
+
+def update_home(home_id: str, data: dict):
+    """Updates a home's details."""
+    response = supabase.table('homes').update(data).eq('id', home_id).execute()
+    return response.data
+
+def update_appliance(appliance_id: str, data: dict):
+    """Updates an appliance's details."""
+    response = supabase.table('appliances').update(data).eq('id', appliance_id).execute()
+    return response.data
+
+# --- DELETE Functions ---
+
+def delete_home(home_id: str):
+    """Deletes a home and all its associated data (cascade)."""
+    response = supabase.table('homes').delete().eq('id', home_id).execute()
+    return response.data
+
+def delete_appliance(appliance_id: str):
+    """Deletes an appliance and its readings (cascade)."""
+    response = supabase.table('appliances').delete().eq('id', appliance_id).execute()
+    return response.data
+
+def delete_reading(reading_id: str):
+    """Deletes a single energy reading."""
+    response = supabase.table('energy_readings').delete().eq('id', reading_id).execute()
+    return response.data
