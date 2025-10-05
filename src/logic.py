@@ -8,9 +8,6 @@ class TaskManager:
     def __init__(self, home_id: str):
         """
         Initializes the manager for a specific home.
-
-        Args:
-            home_id (str): The UUID of the home to manage.
         """
         if not home_id:
             raise ValueError("A valid home_id must be provided.")
@@ -19,15 +16,6 @@ class TaskManager:
     def calculate_appliance_cost(self, appliance_id: str, cost_per_kwh: float, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
         """
         Calculates the total consumption and cost for a single appliance.
-
-        Args:
-            appliance_id (str): The UUID of the appliance.
-            cost_per_kwh (float): The cost rate for one kilowatt-hour.
-            start_date (str, optional): The start date for the period.
-            end_date (str, optional): The end date for the period.
-
-        Returns:
-            A dictionary containing total consumption and cost.
         """
         readings = db.get_energy_readings(appliance_id, start_date, end_date)
         
@@ -44,15 +32,6 @@ class TaskManager:
     def get_home_summary(self, cost_per_kwh: float, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
         """
         Calculates the total cost and consumption for all appliances in the home.
-        Also identifies the appliance with the highest consumption.
-
-        Args:
-            cost_per_kwh (float): The cost rate for one kilowatt-hour.
-            start_date (str, optional): The start date for the period.
-            end_date (str, optional): The end date for the period.
-
-        Returns:
-            A dictionary summarizing the home's total energy usage and costs.
         """
         appliances = db.get_appliances(self.home_id)
         if not appliances:
@@ -68,14 +47,12 @@ class TaskManager:
             appliance_id = appliance['id']
             appliance_summary = self.calculate_appliance_cost(appliance_id, cost_per_kwh, start_date, end_date)
             
-            # Add appliance name to the summary for context
             appliance_summary['name'] = appliance['name']
             appliance_breakdown.append(appliance_summary)
             
             overall_kwh += appliance_summary['total_kwh']
             overall_cost += appliance_summary['total_cost']
 
-            # Check for the highest consumer
             if appliance_summary['total_kwh'] > highest_consumption_appliance['kwh']:
                 highest_consumption_appliance['name'] = appliance['name']
                 highest_consumption_appliance['kwh'] = appliance_summary['total_kwh']
@@ -87,3 +64,15 @@ class TaskManager:
             "highest_consumer": highest_consumption_appliance,
             "appliance_breakdown": appliance_breakdown
         }
+
+    def prepare_chart_data(self, appliance_id: str, start_date: str = None, end_date: str = None) -> Dict[str, List]:
+        """
+        Formats energy readings into labels and data points for charting.
+        """
+        readings = db.get_energy_readings(appliance_id, start_date, end_date)
+        readings.reverse() 
+        
+        labels = [reading['timestamp'] for reading in readings]
+        data = [reading['consumption_kwh'] for reading in readings]
+        
+        return {"labels": labels, "data": data}
